@@ -1,24 +1,26 @@
 import React from 'react';
 import {useRouter} from "next/router";
 import {ParsedUrlQuery} from "querystring";
+import EventsList from "../../../components/events/EventsList/EventsList";
+import {getFilteredEvents} from "../../../data/events";
 
 const EventsFilterPage = () => {
     const router = useRouter()
-    const {eventsFilter}: ParsedUrlQuery = router.query
-    const isQuery = !!eventsFilter
+    const {eventsFilter} = router.query
+
+    if (!eventsFilter) return <p>Check url...</p>
+
+    const searchObj = {
+        year: +eventsFilter[0],
+        month: +eventsFilter[1]
+    }
+    const filteredEvents = getFilteredEvents(searchObj)
+
+    if (filteredEvents.length === 0) return <p style={{textAlign: 'center'}}><b>No events found...</b></p>
 
     return (
         <div>
-            {isQuery ?
-                <h1>
-                    Events filter
-                    by: {eventsFilter[0]} year and {eventsFilter[1]} month
-                </h1> :
-                <h1>
-                    No filters query specified
-                </h1>
-            }
-
+            <EventsList events={filteredEvents}/>
         </div>
     );
 };

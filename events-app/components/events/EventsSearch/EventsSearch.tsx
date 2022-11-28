@@ -1,0 +1,60 @@
+import React, {FC, FormEventHandler, LegacyRef, SelectHTMLAttributes, useRef} from 'react';
+import Button from "../../ui/Button/Button";
+
+import s from "./EventsSearch.module.css"
+import {DateFilterType} from "../../../data/events";
+
+const EventsSearch:FC<{ searchHandler: (filterArgs: DateFilterType) => void}> = ({searchHandler}) => {
+    const submitHandler: FormEventHandler<HTMLFormElement> = (event) => {
+        event.preventDefault()
+
+        const selectedYear = yearRef.current.value
+        const selectedMonth = monthRef.current.value
+        const filterData = {
+            year: +selectedYear,
+            month: +selectedMonth
+        }
+
+        console.log(filterData)
+        searchHandler(filterData)
+    }
+
+    const yearRef = useRef() as React.MutableRefObject<HTMLSelectElement>
+    const monthRef = useRef() as React.MutableRefObject<HTMLSelectElement>
+
+    return (
+        <form className={s.form} onSubmit={submitHandler}>
+            <div className={s.controls}>
+                <div className={s.control}>
+                    <label htmlFor="year">Year</label>
+                    <select name="year" id="year" ref={yearRef}>
+                        <option value="2021">2021</option>
+                        <option value="2022">2022</option>
+                    </select>
+                </div>
+
+                <div className={s.control}>
+                    <label htmlFor="month">Year</label>
+                    <select name="month" id="month" ref={monthRef}>
+                        <option value="0">January</option>
+                        <option value="1">February</option>
+                        <option value="2">March</option>
+                        <option value="3">April</option>
+                        <option value="4">May</option>
+                        <option value="5">June</option>
+                        <option value="6">July</option>
+                        <option value="7">August</option>
+                        <option value="8">September</option>
+                        <option value="9">October</option>
+                        <option value="10">November</option>
+                        <option value="11">December</option>
+                    </select>
+                </div>
+            </div>
+
+            <Button>Find Events</Button>
+        </form>
+    );
+};
+
+export default EventsSearch;
