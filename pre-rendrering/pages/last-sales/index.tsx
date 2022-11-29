@@ -2,9 +2,9 @@ import React, {FC, useEffect, useState} from 'react';
 import useSWR from "swr";
 
 type Sale = {
-    id?: string,
-    username?: string,
-    volume?: number
+    id: string,
+    username: string,
+    volume: number
 }
 
 const LastSalesPage: FC<{ sales: [Sale] }> = (props) => {
