@@ -1,11 +1,12 @@
-import React from 'react';
-import {getFeaturedEvents} from "../data/events";
+import React, {FC} from 'react';
 import EventsList from "../components/events/EventsList/EventsList";
-import EventsSearch from "../components/events/EventsSearch/EventsSearch";
+import {Event} from "./../data/events"
 
-const HomePage = () => {
-    const featuredEvents = getFeaturedEvents()
+type FeaturedEventsProps = {
+    featuredEvents: [Event]
+}
 
+const HomePage: FC<FeaturedEventsProps> = ({featuredEvents}) => {
     return (
         <div>
             <EventsList events={featuredEvents} />
@@ -21,11 +22,11 @@ export const getStaticProps = async () => {
             id: key,
             ...eventsObj[key]
         }
-    }).filter(e => e.featured)
+    }).filter((e: Event) => e.isFeatured)
 
     return {
         props: {
-            events: transformedEvents
+            featuredEvents: transformedEvents
         }
     }
 }
