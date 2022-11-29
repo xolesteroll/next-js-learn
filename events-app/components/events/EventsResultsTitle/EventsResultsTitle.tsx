@@ -1,7 +1,9 @@
-import Button from '../ui/button';
-import classes from './results-title.module.css';
 
-function ResultsTitle(props) {
+import classes from './EventResultsTitle.module.css';
+import Button from "../../ui/Button/Button";
+import {FC} from "react";
+
+const  ResultsTitle:FC<{date: Date}> = (props) => {
   const { date } = props;
 
   const humanReadableDate = new Date(date).toLocaleDateString('en-US', {
@@ -12,7 +14,7 @@ function ResultsTitle(props) {
   return (
     <section className={classes.title}>
       <h1>Events in {humanReadableDate}</h1>
-      <Button link='/events'>Show all events</Button>
+      <Button url='/events'>Show all events</Button>
     </section>
   );
 }

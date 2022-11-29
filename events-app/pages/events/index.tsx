@@ -7,9 +7,9 @@ import {useRouter} from "next/router";
 const EventsPage = () => {
     const events = getAllEvents()
     const router = useRouter()
-    const filterHandler = (filterArgs: DateFilterType) => {
+    const filterHandler = async (filterArgs: DateFilterType) => {
         const fullPath = `/events/${filterArgs.year}/${filterArgs.month}`
-        router.push(fullPath)
+        await router.push(fullPath)
     }
 
     return (

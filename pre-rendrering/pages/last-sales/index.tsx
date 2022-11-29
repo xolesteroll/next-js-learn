@@ -30,15 +30,16 @@ const LastSalesPage: FC<{ sales: [Sale] }> = (props) => {
     } = useSWR('https://client-fetch-next-default-rtdb.europe-west1.firebasedatabase.app/sales.json', fetcher)
 
     useEffect(() => {
-        if (data && !sales) {
+        if (data) {
+            console.log('revalidation')
             // @ts-ignore
             setSales(data)
         }
-    }, [data, sales])
+    }, [data])
 
     if (error) return <p>Something went wrong</p>
 
-    if (!data && !error && !sales && !error) return <p>Loading...</p>
+    if (!data && !sales && !error) return <p>Loading...</p>
 
 
     return (

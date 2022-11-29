@@ -1,6 +1,7 @@
-import classes from './error-alert.module.css';
+import classes from './ErrorAlert.module.css';
+import {FC, PropsWithChildren} from "react";
 
-function ErrorAlert(props) {
+const ErrorAlert:FC<PropsWithChildren> = (props) => {
   return <div className={classes.alert}>{props.children}</div>;
 }
 
