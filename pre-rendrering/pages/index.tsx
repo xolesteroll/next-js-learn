@@ -3,6 +3,7 @@ import React from 'react';
 import path from 'path'
 import fs from 'fs/promises'
 import {GetStaticProps} from "next";
+import Link from "next/link";
 
 type ProductsProps = {
     products: [
@@ -19,18 +20,33 @@ const HomePage = (props: ProductsProps) => {
 
     return (
         <ul>
-            {products.map(p => <li key={p.id}>{p.title}: {p.description}</li>)}
+            {products.map(p => <li key={p.id}>
+                <Link href={`/${p.id}`}>
+                    {p.title}: {p.description}
+                </Link>
+            </li>)}
+
+            <li key={'user-profile'}>
+                <Link href={'/user-profile'}>
+                    User Profile
+                </Link>
+            </li>
+
+            <li key={'last-sales'}>
+                <Link href={'/last-sales'}>
+                    User Profile
+                </Link>
+            </li>
         </ul>
     );
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-    console.log('RE-generating')
     const filePath = path.join(process.cwd(), 'data', 'dummyData.json')
-    const jsonContent = await fs.readFile(filePath)
-    const data = JSON.parse(jsonContent.toString())
+    const jsonData = await fs.readFile(filePath)
+    const data = JSON.parse(jsonData.toString())
 
-    if (!data) return {redirect: {destination: '/no-data'}}
+    if (!data) return {redirect: {destination: '/no-data', permanent: false}}
 
     if (data.products.length === 0) return {notFound: true}
 
