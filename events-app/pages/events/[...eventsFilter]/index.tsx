@@ -1,7 +1,6 @@
 import React from 'react';
-import {useRouter} from "next/router";
 import EventsList from "../../../components/events/EventsList/EventsList";
-import {fetchAndTransformFirebaseData} from "../../../data/events";
+import {getEventsByDate} from "../../../data/events";
 import EventsResultsTitle from "../../../components/events/EventsResultsTitle/EventsResultsTitle";
 import {GetServerSideProps, NextPage} from "next";
 import {Event} from "../../../data/events";
@@ -11,14 +10,14 @@ import Button from "../../../components/ui/Button/Button";
 type FilterPageProps = {
     filteredEvents: [Event] | [],
     year: number,
-    month: number
+    month: number,
+    hasError?: boolean
 }
 
-const EventsFilterPage: NextPage<FilterPageProps> = ({filteredEvents, year, month}) => {
-    const router = useRouter()
-    const {eventsFilter} = router.query
+const EventsFilterPage: NextPage<FilterPageProps> = (props) => {
+   const {filteredEvents, year, month} = props
 
-    if (isNaN(year) || isNaN(month) || eventsFilter?.length !== 2) {
+    if (props.hasError) {
         return (
             <div className="center">
                 <ErrorAlert>
@@ -62,11 +61,18 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         const year = +params.eventsFilter[0]
         const month = +params.eventsFilter[1]
 
-        const events = await fetchAndTransformFirebaseData('https://client-fetch-next-default-rtdb.europe-west1.firebasedatabase.app/events.json')
-        const filteredEvents = events.filter(e => {
-            const eventDate = new Date(e.date);
-            return eventDate.getFullYear() === year && eventDate.getMonth() === month - 1;
-        })
+        if (isNaN(year) || isNaN(month) || params.eventsFilter.length !== 2) {
+            return {
+                props: {
+                    filteredEvents: null,
+                    year: null,
+                    month: null,
+                    hasError: true
+                }
+            }
+        }
+
+        const filteredEvents = await getEventsByDate(year, month)
 
         return {
             props: {
@@ -75,6 +81,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
                 month
             }
         }
+
     }
 
     return {
