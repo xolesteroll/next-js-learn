@@ -6,6 +6,7 @@ import EventsSearch from "../../components/events/EventsSearch/EventsSearch";
 import {useRouter} from "next/router";
 import {GetStaticProps, NextPage} from "next";
 import {Event} from "../../data/events";
+import Head from "next/head";
 
 const EventsPage: NextPage<{fetchedEvents: [Event]}> = ({fetchedEvents}) => {
     // const [events, setEvents] = useState(fetchedEvents)
@@ -38,6 +39,12 @@ const EventsPage: NextPage<{fetchedEvents: [Event]}> = ({fetchedEvents}) => {
 
     return (
         <div>
+            <Head>
+                <title>
+                    All Events
+                </title>
+                <meta name="description" content="Events for all"/>
+            </Head>
             <EventsSearch searchHandler={filterHandler} />
             <EventsList events={fetchedEvents}/>
         </div>

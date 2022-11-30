@@ -11,6 +11,7 @@ import {GetStaticPaths, GetStaticProps, NextPage} from "next";
 import {Event} from "../../../data/events";
 import ErrorAlert from "../../../components/ui/ErrorAlert/ErrorAlert";
 import Button from "../../../components/ui/Button/Button";
+import Head from "next/head";
 
 
 const EventDetails: NextPage<{event: Event | undefined}> = (props) => {
@@ -31,6 +32,12 @@ const EventDetails: NextPage<{event: Event | undefined}> = (props) => {
 
     return (
         <>
+            <Head>
+                <title>
+                    {event.title}
+                </title>
+                <meta name="description" content={event.description}/>
+            </Head>
             <EventSummary title={event.title} />
             <EventLogistics date={event.date} address={event.location} image={event.image} imageAlt={event.title}/>
             <EventContent >
