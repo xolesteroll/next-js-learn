@@ -1,12 +1,15 @@
 import React, {FC} from 'react';
 import EventsList from "../components/events/EventsList/EventsList";
-import {Event} from "./../data/events"
+import {Event, fetchAndTransformFirebaseData} from "./../data/events"
+import {NextPage} from "next";
 
 type FeaturedEventsProps = {
-    featuredEvents: [Event]
+    featuredEvents: [Event] | []
 }
 
-const HomePage: FC<FeaturedEventsProps> = ({featuredEvents}) => {
+const HomePage: NextPage<FeaturedEventsProps> = ({featuredEvents}) => {
+    if (featuredEvents.length === 0) return <p>No featured events at the moment...</p>
+
     return (
         <div>
             <EventsList events={featuredEvents} />
@@ -15,19 +18,13 @@ const HomePage: FC<FeaturedEventsProps> = ({featuredEvents}) => {
 };
 
 export const getStaticProps = async () => {
-    const data = await fetch('https://client-fetch-next-default-rtdb.europe-west1.firebasedatabase.app/events.json')
-    const eventsObj = await data.json()
-    const transformedEvents = Object.keys(eventsObj).map(key => {
-        return {
-            id: key,
-            ...eventsObj[key]
-        }
-    }).filter((e: Event) => e.isFeatured)
-
+    const transformedEvents = await fetchAndTransformFirebaseData('https://client-fetch-next-default-rtdb.europe-west1.firebasedatabase.app/events.json')
+    const featuredEvents = transformedEvents.filter((e: Event) => e.isFeatured)
     return {
         props: {
-            featuredEvents: transformedEvents
-        }
+            featuredEvents: featuredEvents
+        },
+        revalidate: 100
     }
 }
 

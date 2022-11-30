@@ -15,6 +15,30 @@ export interface Event {
 
 export type Events = [Event]
 
+// type FirebaseEventsObject = {
+//     id: {
+//         title: string
+//         description: string
+//         location: string
+//         date: string
+//         image: string
+//         isFeatured: boolean
+//     }
+// }
+
+export const fetchAndTransformFirebaseData = async (dbUrl: string) => {
+    const data = await fetch(dbUrl)
+    const fireBaseDataObj = await data.json()
+    const transformedData = Object.keys(fireBaseDataObj).map(key => {
+        return {
+            id: key,
+            ...fireBaseDataObj[key]
+        }
+    })
+
+    return transformedData
+}
+
 const DUMMY_EVENTS = [
     {
         id: 'e1',
