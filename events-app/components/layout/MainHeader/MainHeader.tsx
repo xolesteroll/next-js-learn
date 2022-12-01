@@ -8,7 +8,7 @@ const MainHeader = () => {
         <header className={s.header}>
             <div className={s.logo}>
                 <Link href="/" >
-                    Go back
+                    Featured Events
                 </Link>
             </div>
             <nav className={s.navigation}>
