@@ -12,6 +12,7 @@ import {Event} from "../../../data/events";
 import ErrorAlert from "../../../components/ui/ErrorAlert/ErrorAlert";
 import Button from "../../../components/ui/Button/Button";
 import Head from "next/head";
+import Comments from "../../../components/input/Comments/Comments";
 
 
 const EventDetails: NextPage<{event: Event | undefined}> = (props) => {
@@ -43,6 +44,7 @@ const EventDetails: NextPage<{event: Event | undefined}> = (props) => {
             <EventContent >
                 <p>{event.description}</p>
             </EventContent>
+            <Comments eventId={event.id} />
         </>
     );
 };
