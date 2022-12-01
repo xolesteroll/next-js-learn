@@ -3,6 +3,7 @@ import EventsList from "../components/events/EventsList/EventsList";
 import {Event, fetchAndTransformFirebaseData} from "./../data/events"
 import {NextPage} from "next";
 import Head from "next/head";
+import NewsletterRegistration from "../components/input/NewsletterRegistration/NewsletterRegistration";
 
 type FeaturedEventsProps = {
     featuredEvents: [Event] | []
@@ -19,6 +20,7 @@ const HomePage: NextPage<FeaturedEventsProps> = ({featuredEvents}) => {
                 </title>
                 <meta name="description" content="Events for all"/>
             </Head>
+            <NewsletterRegistration />
             <EventsList events={featuredEvents} />
         </div>
     );

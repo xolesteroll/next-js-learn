@@ -1,17 +1,14 @@
 import {NextApiHandler} from "next";
-import dbAdmin from "../../../data/firebase-init"
-const admin = require("firebase-admin");
-
+import clientPromise from "../../../data/mongodb-init"
 
 const handler: NextApiHandler = async (req, res) => {
-    const db = admin.database()
-    const dbRef = db.ref('https://client-fetch-next-default-rtdb.europe-west1.firebasedatabase.app/')
-    const emailsRef = dbRef.child('emails')
-    await emailsRef.set({
-        email1: 'someemail'
-    })
+    const client = await clientPromise
+    const db = client.db("next-js")
+    const requestData = req.body
+    console.log(requestData)
 
-    res.status(200).json({message: "OK"})
+    const email = await db.collection("emails").insertOne({email: requestData.email})
+    res.status(200).json({message: "OK", registeredEmailId: email})
 }
 
 export default handler
