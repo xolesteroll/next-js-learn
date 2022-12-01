@@ -3,6 +3,7 @@ import clientPromise from "../../../data/mongodb-init"
 
 const handler: NextApiHandler = async (req, res) => {
     const client = await clientPromise
+    // @ts-ignore
     const db = client.db("next-js")
     const requestData = req.body
     console.log(requestData)
