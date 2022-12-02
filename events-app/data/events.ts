@@ -18,6 +18,14 @@ export type Event = {
     isFeatured: boolean,
 }
 
+export type Comment = {
+    _id: string,
+    eventId: string,
+    email: string,
+    name: string,
+    text: string
+}
+
 
 export const fetchAndTransformFirebaseData = async (url = '') => {
     const data = await fetch(url ? url : eventsDbUrl)

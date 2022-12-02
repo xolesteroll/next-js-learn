@@ -1,4 +1,4 @@
-import React, {FC, useRef, useState} from 'react';
+import React, {FC, FormEvent, FormEventHandler, useRef, useState} from 'react';
 
 import s from './NewComment.module.css'
 import {AddCommentHandlerArgs} from "../Comments/Comments";
@@ -16,7 +16,7 @@ const NewComment: FC<NewCommentProps> = (props) => {
     const nameInputRef = useRef<HTMLInputElement>(null);
     const commentInputRef = useRef<HTMLTextAreaElement>(null);
 
-    function sendCommentHandler(event: SubmitEvent) {
+    function sendCommentHandler(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         const enteredEmail = emailInputRef.current?.value;
@@ -44,7 +44,7 @@ const NewComment: FC<NewCommentProps> = (props) => {
     }
 
     return (
-        <form className={s.form}>
+        <form className={s.form} onSubmit={sendCommentHandler}>
             <div className={s.row}>
                 <div className={s.control}>
                     <label htmlFor='email'>Your email</label>

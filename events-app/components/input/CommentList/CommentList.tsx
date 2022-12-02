@@ -1,23 +1,27 @@
-import React, {FC} from 'react';
+import React, {FC, useState} from 'react';
+import {Comment} from "../../../data/events";
 
 import s from './CommentList.module.css'
 
-const CommentList: FC = () => {
+type CommentListProps = {
+    comments: [Comment] | [] | undefined
+}
+
+const CommentList: FC<CommentListProps> = ({comments}) => {
+    const [eventComments, setEventComments] = useState(comments)
+
     return (
         <ul className={s.comments}>
-            {/* Render list of comments - fetched from API */}
-            <li>
-                <p>My comment is amazing!</p>
-                <div>
-                    By <address>Maximilian</address>
-                </div>
-            </li>
-            <li>
-                <p>My comment is amazing!</p>
-                <div>
-                    By <address>Maximilian</address>
-                </div>
-            </li>
+            {
+                eventComments && eventComments.map(c => {
+                    return <li key={c._id}>
+                        <p>{c.text}</p>
+                        <div>
+                            By <address>{c.name}</address>
+                        </div>
+                    </li>
+                })
+            }
         </ul>
     );
 };

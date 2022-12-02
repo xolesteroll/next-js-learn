@@ -1,11 +1,14 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 
 import s from './Comments.module.css'
 import CommentList from "../CommentList/CommentList";
 import NewComment from "../NewComment/NewComment";
+import useSWR from "swr";
+import {Comment} from "../../../data/events";
 
 type CommentsProps = {
-    eventId: string
+    eventId: string,
+    comments: [Comment] | [] | undefined
 }
 
 export type AddCommentHandlerArgs = {
@@ -15,25 +18,50 @@ export type AddCommentHandlerArgs = {
 }
 
 const Comments: FC<CommentsProps> = (props) => {
-    const { eventId } = props;
+    const {eventId, comments} = props;
 
+    const [loadedComments, setLoadedComments] = useState<[Comment] | [] | undefined>(comments)
     const [showComments, setShowComments] = useState(false);
 
     function toggleCommentsHandler() {
         setShowComments((prevStatus) => !prevStatus);
     }
 
-    function addCommentHandler(commentData: AddCommentHandlerArgs) {
+    async function addCommentHandler(commentData: AddCommentHandlerArgs) {
+        const response = await fetch(`/api/comments/${eventId}`, {
+            method: 'POST',
+            body: JSON.stringify(commentData),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        const data = await response.json()
         // send data to API
     }
+
+    const loadEventComments = async (url: string) => {
+        const response = await fetch(url)
+        const data = await response.json()
+        return data.eventComments
+    }
+
+    const {data, error} = useSWR(`/api/comments/${eventId}`, loadEventComments)
+
+    useEffect(() => {
+        if (data) {
+            setLoadedComments(data)
+        }
+    }, [data])
+
+    if (!data && !error) return <p>Loading...</p>
 
     return (
         <section className={s.comments}>
             <button onClick={toggleCommentsHandler}>
                 {showComments ? 'Hide' : 'Show'} Comments
             </button>
-            {showComments && <NewComment onAddComment={addCommentHandler} />}
-            {showComments && <CommentList />}
+            {showComments && <NewComment onAddComment={addCommentHandler}/>}
+            {showComments && <CommentList comments={loadedComments}/>}
         </section>
     );
 };

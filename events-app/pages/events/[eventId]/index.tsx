@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+    Comment,
     getEventById,
     getEventsParamsArray,
     getFeaturedEvents
@@ -13,10 +14,17 @@ import ErrorAlert from "../../../components/ui/ErrorAlert/ErrorAlert";
 import Button from "../../../components/ui/Button/Button";
 import Head from "next/head";
 import Comments from "../../../components/input/Comments/Comments";
+import clientPromise from "../../../data/mongodb-init";
+
+type EventDetails = {
+    event?: Event,
+    eventComments?: [Comment] | []
+}
 
 
-const EventDetails: NextPage<{event: Event | undefined}> = (props) => {
+const EventDetails: NextPage<EventDetails> = (props) => {
     const event = props.event
+    const comments = props.eventComments
 
     if (!event) {
         return (
@@ -39,12 +47,12 @@ const EventDetails: NextPage<{event: Event | undefined}> = (props) => {
                 </title>
                 <meta name="description" content={event.description}/>
             </Head>
-            <EventSummary title={event.title} />
+            <EventSummary title={event.title}/>
             <EventLogistics date={event.date} address={event.location} image={event.image} imageAlt={event.title}/>
-            <EventContent >
+            <EventContent>
                 <p>{event.description}</p>
             </EventContent>
-            <Comments eventId={event.id} />
+            <Comments eventId={event.id} comments={comments}/>
         </>
     );
 };
@@ -63,11 +71,15 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
 
     if (params) {
         const singleEvent = await getEventById(params?.eventId)
+        const mongoClient = await clientPromise
+        const db = await mongoClient.db("next-js")
+        const data = await db.collection("comments").find({"eventId": params?.eventId}).toArray()
 
         return {
             props: {
                 // used this fix because of serializing error on undefined value
-                event: singleEvent ? singleEvent : null
+                event: singleEvent ? singleEvent : null,
+                eventComments: JSON.parse(JSON.stringify(data))
             }
         }
     }
