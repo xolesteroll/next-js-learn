@@ -13,14 +13,14 @@ const CommentList: FC<CommentListProps> = ({comments}) => {
     return (
         <ul className={s.comments}>
             {
-                eventComments && eventComments.map(c => {
+                eventComments && eventComments.length ? eventComments.map(c => {
                     return <li key={c._id}>
                         <p>{c.text}</p>
                         <div>
                             By <address>{c.name}</address>
                         </div>
                     </li>
-                })
+                }) : <p className="center">No Comments for this events</p>
             }
         </ul>
     );

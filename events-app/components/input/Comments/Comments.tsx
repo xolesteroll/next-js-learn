@@ -53,12 +53,12 @@ const Comments: FC<CommentsProps> = (props) => {
         }
     }, [data])
 
-    if (!data && !error) return <p>Loading...</p>
+    if (!data && !error) return <p className="center">Loading...</p>
 
     return (
         <section className={s.comments}>
             <button onClick={toggleCommentsHandler}>
-                {showComments ? 'Hide' : 'Show'} Comments
+                {showComments ? 'Hide' : 'Show'} Comments ({loadedComments?.length})
             </button>
             {showComments && <NewComment onAddComment={addCommentHandler}/>}
             {showComments && <CommentList comments={loadedComments}/>}

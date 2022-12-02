@@ -41,6 +41,12 @@ const NewComment: FC<NewCommentProps> = (props) => {
             name: enteredName,
             text: enteredComment,
         });
+
+        emailInputRef.current.value = ""
+        nameInputRef.current.value = ""
+        commentInputRef.current.value = ""
+
+
     }
 
     return (
