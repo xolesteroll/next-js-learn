@@ -60,8 +60,8 @@ const Comments: FC<CommentsProps> = (props) => {
             <button onClick={toggleCommentsHandler}>
                 {showComments ? 'Hide' : 'Show'} Comments ({loadedComments?.length})
             </button>
-            {showComments && <NewComment onAddComment={addCommentHandler}/>}
             {showComments && <CommentList comments={loadedComments}/>}
+            {showComments && <NewComment onAddComment={addCommentHandler}/>}
         </section>
     );
 };

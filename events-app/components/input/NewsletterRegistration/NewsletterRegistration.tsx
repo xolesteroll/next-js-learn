@@ -1,13 +1,20 @@
-import React, {FormEvent, FormEventHandler, useRef} from 'react';
+import React, {FormEvent, FormEventHandler, useRef, useState} from 'react';
 
 import s from './NewsletterRegistration.module.css'
 
 const NewsletterRegistration = () => {
-    const emailRef = useRef<HTMLInputElement>(null)
+    const [infoMessage, setInfoMessage] = useState<string>("")
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [enteredEmail, setEnteredEmail] = useState<string>("")
+
+    const emailInputHandler = (e: FormEvent<HTMLInputElement>) => {
+        setEnteredEmail(e.currentTarget.value)
+    }
 
     async function registrationHandler(event: FormEvent<HTMLFormElement>) {
+        setIsLoading(true)
         event.preventDefault();
-        const email = emailRef.current?.value
+        const email = enteredEmail
 
         const response = await fetch('/api/newsletter', {
             method: 'POST',
@@ -16,11 +23,22 @@ const NewsletterRegistration = () => {
                 'Content-type': 'application/json'
             }
         })
-        const responseData = await response.json()
-        console.log(responseData)
-        // fetch user input (state or refs)
-        // optional: validate input
-        // send valid data to API
+
+        if (response.status === 200) {
+            setInfoMessage("Successfully registered! Thank you!")
+
+        } else {
+            setInfoMessage("Something went wrong, please try again")
+        }
+
+        // @ts-ignore
+        setEnteredEmail("")
+        setIsLoading(false)
+
+        const infoMessageTimeout = setTimeout(() => {
+            setInfoMessage("")
+            clearTimeout(infoMessageTimeout)
+        }, 3000)
     }
 
     return (
@@ -31,13 +49,18 @@ const NewsletterRegistration = () => {
                     <input
                         type='email'
                         id='email'
+                        value={enteredEmail}
+                        onChange={emailInputHandler}
                         placeholder='Your email'
                         aria-label='Your email'
-                        ref={emailRef}
                     />
-                    <button>Register</button>
+                    <button disabled={isLoading || enteredEmail.length < 5}>{isLoading ? "Sending..." : "Register"}</button>
                 </div>
             </form>
+            {
+                infoMessage && <p className="center">{infoMessage}</p>
+            }
+
         </section>
     );
 };
