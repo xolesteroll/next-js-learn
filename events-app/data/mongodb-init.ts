@@ -9,7 +9,7 @@ const options = {
     useNewUrlParser: true,
 }
 
+// @ts-ignore
 const client = new MongoClient(uri, options)
-const clientPromise = client.connect()
 
-export default clientPromise
+export default client

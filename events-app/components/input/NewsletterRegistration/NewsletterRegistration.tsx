@@ -31,7 +31,6 @@ const NewsletterRegistration = () => {
             setInfoMessage("Something went wrong, please try again")
         }
 
-        // @ts-ignore
         setEnteredEmail("")
         setIsLoading(false)
 

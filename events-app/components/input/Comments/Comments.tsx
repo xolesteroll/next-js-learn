@@ -18,52 +18,58 @@ export type AddCommentHandlerArgs = {
 }
 
 const Comments: FC<CommentsProps> = (props) => {
-    const {eventId, comments} = props;
+        const {eventId, comments} = props;
 
-    const [loadedComments, setLoadedComments] = useState<[Comment] | [] | undefined>(comments)
-    const [showComments, setShowComments] = useState(false);
+        const [loadedComments, setLoadedComments] = useState<[Comment] | [] | undefined>(comments)
+        const [showComments, setShowComments] = useState(false);
+        const [isLoading, setIsLoading] = useState<boolean>(false)
 
-    function toggleCommentsHandler() {
-        setShowComments((prevStatus) => !prevStatus);
-    }
-
-    async function addCommentHandler(commentData: AddCommentHandlerArgs) {
-        const response = await fetch(`/api/comments/${eventId}`, {
-            method: 'POST',
-            body: JSON.stringify(commentData),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        const data = await response.json()
-        // send data to API
-    }
-
-    const loadEventComments = async (url: string) => {
-        const response = await fetch(url)
-        const data = await response.json()
-        return data.eventComments
-    }
-
-    const {data, error} = useSWR(`/api/comments/${eventId}`, loadEventComments)
-
-    useEffect(() => {
-        if (data) {
-            setLoadedComments(data)
+        function toggleCommentsHandler() {
+            setShowComments((prevStatus) => !prevStatus);
         }
-    }, [data])
 
-    if (!data && !error) return <p className="center">Loading...</p>
+        async function addCommentHandler(commentData: AddCommentHandlerArgs) {
+            const response = await fetch(`/api/comments/${eventId}`, {
+                method: 'POST',
+                body: JSON.stringify(commentData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            return response.status
+            // send data to API
+        }
 
-    return (
-        <section className={s.comments}>
-            <button onClick={toggleCommentsHandler}>
-                {showComments ? 'Hide' : 'Show'} Comments ({loadedComments?.length})
-            </button>
-            {showComments && <CommentList comments={loadedComments}/>}
-            {showComments && <NewComment onAddComment={addCommentHandler}/>}
-        </section>
-    );
-};
+        const loadEventComments = async (url: string) => {
+            const response = await fetch(url)
+            const data = await response.json()
+            return data.eventComments
+        }
+
+        // const {data, error} = useSWR(`/api/comments/${eventId}`, loadEventComments)
+
+
+        useEffect(() => {
+            if (showComments) {
+                setIsLoading(true)
+                loadEventComments(`/api/comments/${eventId}`).then(data => {
+                    setLoadedComments(data)
+                    setIsLoading(false)
+                })
+            }
+        }, [showComments])
+
+        return (
+            <section className={s.comments}>
+                <button onClick={toggleCommentsHandler}>
+                    {showComments ? 'Hide' : 'Show'} Comments ({loadedComments?.length})
+                </button>
+                {isLoading && <p className="center">Loading...</p>}
+                {(showComments && !isLoading) && <CommentList comments={loadedComments}/>}
+                {showComments && <NewComment onAddComment={addCommentHandler}/>}
+            </section>
+        );
+    }
+;
 
 export default Comments;
