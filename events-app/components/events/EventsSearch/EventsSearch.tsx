@@ -14,8 +14,6 @@ const EventsSearch:FC<{ searchHandler: (filterArgs: DateFilterType) => void}> = 
             year: +selectedYear,
             month: +selectedMonth
         }
-
-        console.log(filterData)
         searchHandler(filterData)
     }
 

@@ -1,7 +1,8 @@
-import React, {FC, FormEvent, useState} from 'react';
+import React, {FC, FormEvent, useContext, useState} from 'react';
 
 import s from './NewComment.module.css'
 import {AddCommentHandlerArgs} from "../Comments/Comments";
+import {NotificationContext} from "../../../store/notification-context";
 
 type AddCommentHandler = (args: AddCommentHandlerArgs) => Promise<number>
 
@@ -17,6 +18,8 @@ const NewComment: FC<NewCommentProps> = (props) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [responseInfo, setResponseInfo] = useState<string>("")
 
+    const notificationCtx = useContext(NotificationContext)
+
     const clearFormFields = () => {
         setEnteredEmail("")
         setEnteredName("")
@@ -26,6 +29,12 @@ const NewComment: FC<NewCommentProps> = (props) => {
     async function sendCommentHandler(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setIsLoading(true)
+
+        notificationCtx.showNotification({
+            title: "Processing...",
+            message: "Adding your comment",
+            status: "pending"
+        })
         if (
             !enteredEmail ||
             enteredEmail.trim() === '' ||
@@ -36,6 +45,11 @@ const NewComment: FC<NewCommentProps> = (props) => {
             enteredComment.trim() === ''
         ) {
             setIsInvalid(true);
+            notificationCtx.showNotification({
+                title: "Wrong data",
+                message: "Please enter valid data",
+                status: "error"
+            })
             return;
         } else {
             setIsInvalid(false)
@@ -50,8 +64,18 @@ const NewComment: FC<NewCommentProps> = (props) => {
 
         if (responseCode === 200) {
             setResponseInfo("Your comments was successfully added, thank you!")
+            notificationCtx.showNotification({
+                title: "Success",
+                message: "We've  added your comment, thank you!",
+                status: "success"
+            })
         } else {
             setResponseInfo("Something went wrong, please check entered data, or try again later")
+            notificationCtx.showNotification({
+                title: "Error",
+                message: "Something went wrong...",
+                status: "error"
+            })
         }
 
         const noticeTimeout = setTimeout(() => {

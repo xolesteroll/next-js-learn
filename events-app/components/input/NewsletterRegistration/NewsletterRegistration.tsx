@@ -1,11 +1,14 @@
-import React, {FormEvent, FormEventHandler, useRef, useState} from 'react';
+import React, {FormEvent, FormEventHandler, useContext, useRef, useState} from 'react';
 
 import s from './NewsletterRegistration.module.css'
+import {NotificationContext} from "../../../store/notification-context";
 
 const NewsletterRegistration = () => {
     const [infoMessage, setInfoMessage] = useState<string>("")
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [enteredEmail, setEnteredEmail] = useState<string>("")
+
+    const notificationCtx = useContext(NotificationContext)
 
     const emailInputHandler = (e: FormEvent<HTMLInputElement>) => {
         setEnteredEmail(e.currentTarget.value)
@@ -13,6 +16,11 @@ const NewsletterRegistration = () => {
 
     async function registrationHandler(event: FormEvent<HTMLFormElement>) {
         setIsLoading(true)
+        notificationCtx.showNotification({
+            title: "Processing",
+            message: "Registering your email",
+            status: "pending"
+        })
         event.preventDefault();
         const email = enteredEmail
 
@@ -26,9 +34,19 @@ const NewsletterRegistration = () => {
 
         if (response.status === 200) {
             setInfoMessage("Successfully registered! Thank you!")
+            notificationCtx.showNotification({
+                title: "Success",
+                message: "Your email was registered",
+                status: "success"
+            })
 
         } else {
             setInfoMessage("Something went wrong, please try again")
+            notificationCtx.showNotification({
+                title: "Error",
+                message: "There was an error on registering your email",
+                status: "error"
+            })
         }
 
         setEnteredEmail("")
