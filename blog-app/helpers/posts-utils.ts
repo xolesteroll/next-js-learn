@@ -10,7 +10,7 @@ export const getPostsFiles = () => {
 
 export const getPostData = (postIdentifier: string) => {
     const postSlug = postIdentifier.replace(/\.md$/, '')
-    console.log(postSlug)
+
     const filePath = path.join(postsDirectoryPath, `${postSlug}.md`)
     const fileContent = fs.readFileSync(filePath, 'utf-8')
 
@@ -41,11 +41,4 @@ export const getFeaturedPosts = () => {
     const featuredPosts = posts.filter(p => p.data.isFeatured)
 
     return featuredPosts
-}
-
-export const getPostBySlug = (slug: string) => {
-    const postsData = getAllPosts()
-    const foundPost = postsData.find(p => p.data.slug === slug)
-
-    return foundPost
 }

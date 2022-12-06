@@ -1,11 +1,10 @@
 import React from 'react';
 import {NextPage} from "next";
+import ContactForm from "../../components/contact/ContactForm/ContactForm";
 
 const ContactPage: NextPage = () => {
     return (
-        <div>
-            <h1>Contact Me</h1>
-        </div>
+        <ContactForm />
     );
 };
 
