@@ -1,8 +1,8 @@
-import React, {FormEvent, useEffect, useState} from 'react';
+import React, {FormEvent, useContext, useEffect, useState} from 'react';
 
 import s from "./ContactForm.module.css"
 import {sendContactFormData} from "../../../helpers/fetchers";
-import {NotificationObject} from "../../../types/fetchers";
+import {NotificationContext} from "../../../store/notificationContext";
 
 const ContactForm = () => {
     const [enteredEmail, setEnteredEmail] = useState<string>("")
@@ -10,8 +10,8 @@ const ContactForm = () => {
     const [enteredMessage, setEnteredMessage] = useState<string>("")
     const [isValid, setIsValid] = useState<boolean>(true)
     const [isFetching, setIsFetching] = useState<boolean>(false)
-    const [notification, setNotification] = useState<NotificationObject>({show: false, message: ""})
-    const [responseSuccessClass, setResponseSuccessClass] = useState<string>("success")
+
+    const notificationCtx = useContext(NotificationContext)
 
     useEffect(() => {
         if (
@@ -43,15 +43,20 @@ const ContactForm = () => {
         }
         setIsFetching(true)
         const response = await sendContactFormData(formValues)
-        setResponseSuccessClass(response.ok ? "success" : "error")
-
-        const responseData = await response.json()
-        setNotification({show: true, message: responseData.message || responseData.error})
-
-        const notificationTimeout = setTimeout(() => {
-            setNotification({show: false, message: ""})
-            clearTimeout(notificationTimeout)
-        }, 3000)
+        if (response.ok) {
+            notificationCtx.showNotification({
+                title: "Success",
+                message: "Your feedback was successfully sent, thank you!",
+                status: "success"
+            })
+        } else {
+            const responseData = await response.json()
+            notificationCtx.showNotification({
+                title: "Error",
+                message: responseData.message || responseData.error,
+                status: "error"
+            })
+        }
 
         clearFormFields()
         setIsFetching(false)
@@ -104,8 +109,6 @@ const ContactForm = () => {
                         }
                     </button>
                 </div>
-
-                {notification.show && <p className={`${s.notification} ${s[responseSuccessClass]}`}>{notification.message}</p>}
             </form>
         </section>
     );
