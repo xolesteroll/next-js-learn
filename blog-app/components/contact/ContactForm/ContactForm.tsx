@@ -3,6 +3,7 @@ import React, {FormEvent, useContext, useEffect, useState} from 'react';
 import s from "./ContactForm.module.css"
 import {sendContactFormData} from "../../../helpers/fetchers";
 import {NotificationContext} from "../../../store/notificationContext";
+import {ContactFormData} from "../../../types/fetchers";
 
 const ContactForm = () => {
     const [enteredEmail, setEnteredEmail] = useState<string>("")
@@ -25,6 +26,20 @@ const ContactForm = () => {
         }
     }, [enteredName, enteredEmail, enteredMessage])
 
+    const sendFeedbackHandler = async (feedbackData: ContactFormData) => {
+        try {
+            const response = await sendContactFormData(feedbackData)
+            return response
+        } catch (e: any) {
+            notificationCtx.showNotification({
+                title: "Error",
+                message: "Bad request",
+                status: "error"
+            })
+            return
+        }
+    }
+
     const clearFormFields = () => {
         setEnteredName("")
         setEnteredEmail("")
@@ -42,15 +57,24 @@ const ContactForm = () => {
             message: enteredMessage
         }
         setIsFetching(true)
-        const response = await sendContactFormData(formValues)
-        if (response.ok) {
+        notificationCtx.showNotification({
+            title: "Sending...",
+            message: "Your feedback is on it's way!",
+            status: "pending"
+        })
+        const response = await sendFeedbackHandler(formValues)
+
+        clearFormFields()
+        setIsFetching(false)
+
+        if (response && response.ok) {
             notificationCtx.showNotification({
                 title: "Success",
                 message: "Your feedback was successfully sent, thank you!",
                 status: "success"
             })
-        } else {
-            const responseData = await response.json()
+        } else if (response && !response.ok) {
+            const responseData = await response?.json()
             notificationCtx.showNotification({
                 title: "Error",
                 message: responseData.message || responseData.error,
@@ -58,8 +82,6 @@ const ContactForm = () => {
             })
         }
 
-        clearFormFields()
-        setIsFetching(false)
     }
 
     return (
