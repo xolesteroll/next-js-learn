@@ -43,9 +43,7 @@ const ContactForm = () => {
         }
         setIsFetching(true)
         const response = await sendContactFormData(formValues)
-        if (!response.ok) {
-            setResponseSuccessClass("error")
-        }
+        response.ok ? setResponseSuccessClass("success") : setResponseSuccessClass("error")
 
         const responseData = await response.json()
         setNotification({show: true, message: responseData.message || responseData.error})
