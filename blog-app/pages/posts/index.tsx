@@ -1,46 +1,24 @@
 import React from 'react';
 import {NextPage} from "next";
 import AllPosts from "../../components/posts/AllPosts/AllPosts";
-const DUMMY_POSTS = [
-    {
-        id: 'p1',
-        title: 'Getting started with NextJS',
-        slug: 'getting-started-with-nextjs',
-        image: 'getting-started-nextjs.png',
-        excerpt: 'Some description of NextJS Features, etc',
-        date: '2022-02-10'
-    },
-    {
-        id: 'p2',
-        title: 'Getting started with NextJS',
-        slug: 'getting-started-with-nextjs2',
-        image: 'getting-started-nextjs.png',
-        excerpt: 'Some description of NextJS Features, etc',
-        date: '2022-02-10'
-    },
-    {
-        id: 'p3',
-        title: 'Getting started with NextJS',
-        slug: 'getting-started-with-nextjs3',
-        image: 'getting-started-nextjs.png',
-        excerpt: 'Some description of NextJS Features, etc',
-        date: '2022-02-10'
-    },
-    {
-        id: 'p4',
-        title: 'Getting started with NextJS',
-        slug: 'getting-started-with-nextjs4',
-        image: 'getting-started-nextjs.png',
-        excerpt: 'Some description of NextJS Features, etc',
-        date: '2022-02-10'
-    }
-]
+import {getAllPosts} from "../../helpers/posts-utils";
+import {Post} from "../../types/posts";
 
-const PostsPage: NextPage = () => {
+const PostsPage: NextPage<{posts: [Post] | []}> = ({posts}) => {
     return (
     // @ts-ignore
-        <AllPosts posts={DUMMY_POSTS} />
+        <AllPosts posts={posts} />
     );
 };
+
+export const getStaticProps = async () => {
+    const postsData = getAllPosts()
+
+    return {
+        props: {
+            posts: JSON.parse(JSON.stringify(postsData))
+        }
+    }
+}
 
 export default PostsPage;

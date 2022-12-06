@@ -10,7 +10,7 @@ const PostsGrid: FC<{ posts: [Post] | [] }> = ({posts}) => {
         <ul className={s.grid}>
             {
                 posts.length > 0 ?
-                    posts.map(p => <PostItem post={p} key={p.slug}/>) :
+                    posts.map(p => <PostItem post={p} key={p.data.slug}/>) :
                     <p>No posts yet...</p>
             }
         </ul>

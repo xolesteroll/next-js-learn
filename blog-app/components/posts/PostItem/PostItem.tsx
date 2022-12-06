@@ -6,7 +6,7 @@ import {Post} from "../../../types/posts";
 import s from "./PostItem.module.css"
 
 const PostItem: FC<{post: Post}> = ({post}) => {
-    const {title, image, excerpt, date, slug} = post
+    const {title, image, excerpt, date, slug} = post.data
     const imagePath = `/images/posts/${slug}/${image}`
     const postPath = `/posts/${slug}`
     const formattedDate = new Date(date).toLocaleDateString('en-US', {
