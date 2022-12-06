@@ -62,6 +62,7 @@
 
 .form button:disabled, .form button:disabled:hover {
     background-color: #cccccc;
+    cursor: default;
 }
 
 .form button:hover {
@@ -74,6 +75,8 @@
     border-style: solid;
     padding: 3px;
     text-align: center;
+    width: fit-content;
+    margin: 10px auto;
 }
 
 .notification.success {
