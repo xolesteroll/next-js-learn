@@ -13,7 +13,7 @@ const NotificationContextProvider: FC<PropsWithChildren> = ({children}) => {
     const [notificationData, setNotificationData] = useState<NotificationType | null>(null)
 
     useEffect(() => {
-        if (notificationData) {
+        if (notificationData && notificationData.status !== "pending") {
             const notificationTimeout = setTimeout(() => {
                 setNotificationData(null)
             }, 3000)

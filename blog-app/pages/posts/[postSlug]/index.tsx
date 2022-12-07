@@ -3,10 +3,17 @@ import {GetStaticProps, NextPage} from "next";
 import PostDetail from "../../../components/posts/PostDetail/PostDetail";
 import {getPostData, getPostsFiles} from "../../../helpers/posts-utils";
 import {Post} from "../../../types/posts";
+import Head from "next/head";
 
 const PostDetailsPage: NextPage<{post: Post}> = ({post}) => {
     return (
+        <>
+            <Head >
+                <title>{post.data.title}</title>
+                <meta name='description' content={post.data.excerpt}/>
+            </Head>
         <PostDetail post={post}/>
+        </>
     );
 };
 
