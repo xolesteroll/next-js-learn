@@ -20,9 +20,12 @@ const handler: NextApiHandler = async (req, res) => {
                 if (!databaseURL) throw new Error("Database connection error")
 
                 client = new MongoClient(databaseURL)
+                let clientConnectionError
                 await client.connect((err) => {
-                    if (err) throw new Error("Database connection error")
+                    if (err) clientConnectionError = err
                 })
+                if (clientConnectionError) throw new Error("Database connection error")
+
                 const dbName = process.env.environment === "development" ? "blog" : "blog-prod"
                 const db = client.db(dbName)
                 const existingEmail = await db.collection("feedback").findOne({email})
